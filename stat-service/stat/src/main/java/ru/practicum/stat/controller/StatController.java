@@ -17,7 +17,7 @@ public class StatController {
 
     private final HitService hitService;
 
-    private final String DATE = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE = "yyyy-MM-dd HH:mm:ss";
 
     @PostMapping("/hit")
     public HitResponseDto saveHit(@RequestBody HitCreateRequestDto requestHit) {
