@@ -29,13 +29,13 @@ public class HitServiceImpl implements HitService {
                                                LocalDateTime end,
                                                List<String> uris,
                                                Boolean unique) {
-        if(unique) {
-            if(uris == null || uris.isEmpty()) {
+        if (unique) {
+            if (uris == null || uris.isEmpty()) {
                 return hitRepository.findAllByTimestampBetweenUnique(start, end);
             }
             return hitRepository.findAllByTimestampBetweenUniqueWithUris(start, end, uris);
         } else {
-            if(uris == null || uris.isEmpty()) {
+            if (uris == null || uris.isEmpty()) {
                 return hitRepository.findAllByTimestampBetween(start, end);
             }
             return hitRepository.findAllByTimestampBetweenWithUris(start, end, uris);

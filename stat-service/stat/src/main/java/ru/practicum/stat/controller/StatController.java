@@ -17,7 +17,7 @@ public class StatController {
 
     private final HitService hitService;
 
-    private final String FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
+    private final String DATE = "yyyy-MM-dd HH:mm:ss";
 
     @PostMapping("/hit")
     public HitResponseDto saveHit(@RequestBody HitCreateRequestDto requestHit) {
@@ -26,11 +26,11 @@ public class StatController {
 
     @GetMapping("/stats")
     public List<StatResponseDto> getStats(@RequestParam(value = "start")
-                                          @DateTimeFormat(pattern = FORMAT_DATE) LocalDateTime start,
+                                          @DateTimeFormat(pattern = DATE) LocalDateTime start,
                                           @RequestParam(value = "end")
-                                          @DateTimeFormat(pattern = FORMAT_DATE) LocalDateTime end,
-                                          @RequestParam(value= "uris", required = false) List<String> uris,
-                                          @RequestParam(value="unique", required = false, defaultValue = "false") Boolean unique) {
+                                          @DateTimeFormat(pattern = DATE) LocalDateTime end,
+                                          @RequestParam(value = "uris", required = false) List<String> uris,
+                                          @RequestParam(value = "unique", required = false, defaultValue = "false") Boolean unique) {
 
         return hitService.getStatistics(start, end, uris, unique);
 
