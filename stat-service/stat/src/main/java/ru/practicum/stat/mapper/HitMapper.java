@@ -9,8 +9,9 @@ import java.time.format.DateTimeFormatter;
 
 public class HitMapper {
 
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static HitResponseDto toHitDto(Hit hit) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return HitResponseDto.builder()
                 .id(hit.getId())
                 .app(hit.getApp())
@@ -21,7 +22,6 @@ public class HitMapper {
     }
 
     public static Hit toHit(HitCreateRequestDto hitCreateRequestDto) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return Hit.builder()
                 .app(hitCreateRequestDto.getApp())
                 .uri(hitCreateRequestDto.getUri())
