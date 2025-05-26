@@ -16,7 +16,7 @@ public class CompilationDto {
     private List<EventShortDto> events;
 
     @NotNull
-    private boolean pinned;
+    private Boolean pinned;
 
     @NotNull
     @NotBlank

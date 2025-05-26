@@ -1,11 +1,18 @@
 package ru.practicum.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewEventDto {
 
     @NotNull
@@ -26,13 +33,14 @@ public class NewEventDto {
     private String eventDate;
 
     @NotNull
-    private Location location;
+    private LocationDto location;
 
     private boolean paid;
 
+    @PositiveOrZero
     private Integer participantLimit;
 
-    private boolean requestModeration;
+    private boolean requestModeration = true;
 
     @NotNull
     @NotBlank

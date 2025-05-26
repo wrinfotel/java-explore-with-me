@@ -2,7 +2,6 @@ package ru.practicum.service;
 
 import ru.practicum.dto.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -19,15 +18,15 @@ public interface EventService {
     EventRequestStatusUpdateResult updateRequestsStatus(EventRequestStatusUpdateRequest updateRequest,
                                                         Long userId, Long eventId);
 
-    List<EventFullDto> eventAdminSearch(List<Integer> users, List<Integer> states,
-                                        List<Integer> categories, String rangeStart,
+    List<EventFullDto> eventAdminSearch(List<Long> users, List<EventStatus> states,
+                                        List<Long> categories, String rangeStart,
                                         String rangeEnd, Integer from, Integer size);
 
-    EventFullDto updateAdminEvent(UpdateEventAdminRequest updateEventAdminRequest, Long eventId);
+    EventFullDto updateAdminEvent(UpdateEventUserRequest updateEventAdminRequest, Long eventId);
 
-    List<EventShortDto> eventSearch(String text, List<Integer> categories,
-                                    Boolean paid, LocalDateTime rangeStart,
-                                    LocalDateTime rangeEnd, Boolean onlyAvailable,
+    List<EventShortDto> eventSearch(String text, List<Long> categories,
+                                    Boolean paid, String rangeStart,
+                                    String rangeEnd, Boolean onlyAvailable,
                                     String sort, Integer from, Integer size);
 
     EventFullDto getEventById(Long id);

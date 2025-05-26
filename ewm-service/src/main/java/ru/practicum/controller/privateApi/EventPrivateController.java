@@ -1,6 +1,8 @@
 package ru.practicum.controller.privateApi;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.*;
 import ru.practicum.service.EventService;
@@ -10,19 +12,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class EventController {
+public class EventPrivateController {
 
     private final EventService eventService;
 
     @GetMapping("/{userId}/events")
     public List<EventShortDto> getUserEvents(@PathVariable Long userId,
-                                             @RequestParam(name = "from") Integer from,
-                                             @RequestParam(name = "size") Integer size) {
+                                             @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                             @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return eventService.getUserEvents(userId, from, size);
     }
 
     @PostMapping("/{userId}/events")
-    public EventFullDto createEvent(@RequestBody NewEventDto newEventDto,
+    @ResponseStatus(HttpStatus.CREATED)
+    public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto,
                                     @PathVariable Long userId) {
         return eventService.createNewEvent(newEventDto, userId);
     }
@@ -34,7 +37,7 @@ public class EventController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    public EventFullDto updateUserEvent(@RequestBody UpdateEventUserRequest eventUserRequest,
+    public EventFullDto updateUserEvent(@Valid @RequestBody UpdateEventUserRequest eventUserRequest,
                                         @PathVariable Long userId,
                                         @PathVariable Long eventId) {
         return eventService.updateUserEvent(eventUserRequest, userId, eventId);
@@ -47,7 +50,7 @@ public class EventController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
-    public EventRequestStatusUpdateResult setRequestsStatus(@RequestBody EventRequestStatusUpdateRequest updateRequest,
+    public EventRequestStatusUpdateResult setRequestsStatus(@Valid @RequestBody EventRequestStatusUpdateRequest updateRequest,
                                                             @PathVariable Long userId,
                                                             @PathVariable Long eventId) {
         return eventService.updateRequestsStatus(updateRequest, userId, eventId);

@@ -3,9 +3,10 @@ package ru.practicum.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import ru.practicum.dto.EventStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,12 +30,12 @@ public class Event {
 
 
     @Column(name = "created_on")
-    private LocalDate createdOn;
+    private LocalDateTime createdOn;
 
     private String description;
 
     @Column(name = "event_date")
-    private LocalDate eventDate;
+    private LocalDateTime eventDate;
 
     @OneToOne
     @JoinColumn(name = "initiator_id")
@@ -55,7 +56,15 @@ public class Event {
     @Column(name = "request_moderation")
     private boolean requestModeration;
 
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private EventStatus state;
 
     private String title;
+
+    @OneToMany
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    private Set<ParticipationRequest> participantRequests;
+
+    @Transient
+    private Long views;
 }

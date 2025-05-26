@@ -35,7 +35,7 @@ public class EventFullDto {
     private UserShortDto initiator;
 
     @NotNull
-    private Location location;
+    private LocationDto location;
 
     @NotNull
     private boolean paid;
@@ -46,7 +46,7 @@ public class EventFullDto {
 
     private boolean requestModeration;
 
-    private EventState state;
+    private EventStatus state;
 
     @NotNull
     @NotBlank

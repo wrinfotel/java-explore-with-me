@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "locations")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {

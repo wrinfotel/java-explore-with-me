@@ -28,13 +28,13 @@ public class UpdateEventAdminRequest {
     private String eventDate;
 
     @NotNull
-    private Location location;
+    private LocationDto location;
 
-    private boolean paid;
+    private Boolean paid;
 
     private Integer participantLimit;
 
-    private boolean requestModeration;
+    private Boolean requestModeration;
 
     private EventState stateAction;
 

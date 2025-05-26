@@ -31,7 +31,6 @@ public class StatController {
                                           @DateTimeFormat(pattern = DATE) LocalDateTime end,
                                           @RequestParam(value = "uris", required = false) List<String> uris,
                                           @RequestParam(value = "unique", required = false, defaultValue = "false") Boolean unique) {
-
         return hitService.getStatistics(start, end, uris, unique);
 
     }

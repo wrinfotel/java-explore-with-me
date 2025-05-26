@@ -20,12 +20,13 @@ public class Compilation {
 
     private String title;
 
-    private boolean pinned;
+    private Boolean pinned;
 
     @ManyToMany
-    @JoinTable(name = "compilations_events",
-            joinColumns = @JoinColumn(name = "compilation_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
+    @JoinTable(
+            name = "compilation_events",
+            joinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id")
     )
     @OrderBy("eventDate")
     private Set<Event> events;
