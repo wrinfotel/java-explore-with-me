@@ -30,7 +30,7 @@ public class HitServiceImpl implements HitService {
                                                LocalDateTime end,
                                                List<String> uris,
                                                Boolean unique) {
-        if(start.isBefore(end)) {
+        if (start.isBefore(end)) {
             if (unique) {
                 if (uris == null || uris.isEmpty()) {
                     return hitRepository.findAllByTimestampBetweenUnique(start, end);
