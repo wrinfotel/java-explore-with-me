@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.dto.HitCreateRequestDto;
 import ru.practicum.dto.HitResponseDto;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class StatClient extends BaseClient {
     public StatClient(@Value("${stats.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
@@ -43,12 +45,12 @@ public class StatClient extends BaseClient {
         Map<String, Object> params = new HashMap<>();
         params.put("start", start);
         params.put("end", end);
-        params.put("uris", uris);
+        params.put("uris", String.join(",", uris));
         params.put("unique", unique);
         ResponseEntity<Object> response = get(params);
         ObjectMapper objectMapper = new ObjectMapper();
-        TypeReference<List<StatResponseDto>> jacksonTypeReference = new TypeReference<>() {
-        };
-        return objectMapper.readValue((JsonParser) response.getBody(), jacksonTypeReference);
+
+        return objectMapper.convertValue(response.getBody(),
+                new TypeReference<List<StatResponseDto>>() {});
     }
 }
