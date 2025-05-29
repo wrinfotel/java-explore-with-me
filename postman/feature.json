@@ -218,7 +218,7 @@
 							"        const user = await api.addUser(rnd.getUser());\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
-							"        let comment;\r",
+							"         let comment;\r",
 							"        comment = rnd.getAdminComment();\r",
 							"        comment.eventId = event.id;\r",
 							"        event = await api.publishEvent(event.id);\r",
@@ -272,6 +272,15 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{baseUrl}}/admin/events/add-comment",
 					"host": [
