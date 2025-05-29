@@ -400,7 +400,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventAdminCommentDto> getAdminComment(Long userId, Long eventId) {
         Event event = checkIsUserEvent(userId, eventId);
-        if(!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
+        if (!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
             throw new ValidationException("Event doesn't have comments");
         }
         List<AdminComment> eventComments = adminCommentRepository.findAllByEventId(eventId);
