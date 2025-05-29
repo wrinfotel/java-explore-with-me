@@ -410,14 +410,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto resendEvent(Long userId, Long eventId) {
         Event event = checkIsUserEvent(userId, eventId);
-        if(!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
+        if (!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
             throw new ValidationException("You can resend to moderation events on status 'Need correction'");
         }
         AdminComment actualComment = adminCommentRepository.findByEventIdAndStatus(eventId, AdminCommentStatus.ACTUAL);
-        if(actualComment == null) {
+        if (actualComment == null) {
             throw new NotFoundException("Admin comment for event with id=" + eventId + " was not found");
         }
-        if(actualComment.getCreatedAt().isAfter(event.getUpdatedOn())) {
+        if (actualComment.getCreatedAt().isAfter(event.getUpdatedOn())) {
             throw new ConflictException("You should fix Event before resend to moderation");
         }
         actualComment.setStatus(AdminCommentStatus.OUTDATED);

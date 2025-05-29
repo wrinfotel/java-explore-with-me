@@ -21,6 +21,6 @@ public class NewEventAdminCommentDto {
 
     @NotNull
     @NotBlank
-    @Size(min=10, max = 255)
+    @Size(min = 10, max = 255)
     private String text;
 }
