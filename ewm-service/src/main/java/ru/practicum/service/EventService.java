@@ -1,5 +1,6 @@
 package ru.practicum.service;
 
+import jakarta.validation.Valid;
 import ru.practicum.dto.*;
 
 import java.util.List;
@@ -30,4 +31,10 @@ public interface EventService {
                                     String sort, Integer from, Integer size);
 
     EventFullDto getEventById(Long id);
+
+    EventAdminCommentDto addAdminCommentAndChangeStatus(@Valid NewEventAdminCommentDto eventAdminComment);
+
+    List<EventAdminCommentDto> getAdminComment(Long userId, Long eventId);
+
+    EventFullDto resendEvent(Long userId, Long eventId);
 }

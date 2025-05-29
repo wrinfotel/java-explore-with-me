@@ -2,10 +2,9 @@ package ru.practicum.controller.adminApi;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.EventFullDto;
-import ru.practicum.dto.EventStatus;
-import ru.practicum.dto.UpdateEventUserRequest;
+import ru.practicum.dto.*;
 import ru.practicum.service.EventService;
 
 import java.util.List;
@@ -26,6 +25,21 @@ public class EventAdminController {
                                         @RequestParam(name = "from", defaultValue = "0", required = false) Integer from,
                                         @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
         return eventService.eventAdminSearch(users, states, categories, rangeStart, rangeEnd, from, size);
+    }
+
+    @GetMapping("/pending-events")
+    public List<EventFullDto> getPendingEvents(@RequestParam(name = "from", defaultValue = "0",
+                                                       required = false) Integer from,
+                                               @RequestParam(name = "size", defaultValue = "10",
+                                                       required = false) Integer size) {
+        return eventService.eventAdminSearch(null, List.of(EventStatus.PENDING),
+                null, null, null, from, size);
+    }
+
+    @PostMapping("add-comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EventAdminCommentDto addAdminCommentToEvent(@Valid @RequestBody NewEventAdminCommentDto eventAdminComment) {
+        return eventService.addAdminCommentAndChangeStatus(eventAdminComment);
     }
 
     @PatchMapping("/{eventId}")

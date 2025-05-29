@@ -43,6 +43,12 @@ public class EventPrivateController {
         return eventService.updateUserEvent(eventUserRequest, userId, eventId);
     }
 
+    @GetMapping("/{userId}/events/{eventId}/resend")
+    public EventFullDto resendEvent(@PathVariable Long userId,
+                                    @PathVariable Long eventId) {
+        return eventService.resendEvent(userId, eventId);
+    }
+
     @GetMapping("/{userId}/events/{eventId}/requests")
     public List<ParticipationRequestDto> getParticipationRequests(@PathVariable Long userId,
                                                                   @PathVariable Long eventId) {
@@ -54,5 +60,11 @@ public class EventPrivateController {
                                                             @PathVariable Long userId,
                                                             @PathVariable Long eventId) {
         return eventService.updateRequestsStatus(updateRequest, userId, eventId);
+    }
+
+    @GetMapping("/{userId}/events/{eventId}/admin-comment")
+    public List<EventAdminCommentDto> getEventAdminComment(@PathVariable Long userId,
+                                                           @PathVariable Long eventId) {
+        return eventService.getAdminComment(userId, eventId);
     }
 }
