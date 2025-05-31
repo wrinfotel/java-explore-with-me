@@ -20,6 +20,7 @@ public class EventMapper {
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
                 .eventDate(event.getEventDate().format(DATE_TIME_FORMATTER))
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .state(event.getState())
                 .paid(event.isPaid())
                 .title(event.getTitle())
                 .views(event.getViews())

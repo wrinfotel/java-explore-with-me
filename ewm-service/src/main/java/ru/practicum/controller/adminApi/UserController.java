@@ -20,11 +20,11 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Long> ids,
+    public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
                                   @PositiveOrZero
-                                  @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                  @RequestParam(defaultValue = "0") Integer from,
                                   @Positive
-                                  @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+                                  @RequestParam(defaultValue = "10") Integer size) {
         return userService.getAllUsers(ids, from, size);
     }
 

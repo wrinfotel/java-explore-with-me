@@ -6,11 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatClient;
 import ru.practicum.dto.*;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
+import ru.practicum.mapper.AdminCommentMapper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.mapper.ParticipationRequestMapper;
 import ru.practicum.model.*;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
@@ -36,6 +39,8 @@ public class EventServiceImpl implements EventService {
 
     private final StatClient statClient;
 
+    private final AdminCommentRepository adminCommentRepository;
+
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final UserRepository userRepository;
 
@@ -48,6 +53,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto createNewEvent(NewEventDto newEventDto, Long userId) {
         Event newEvent = EventMapper.toEvent(newEventDto);
         if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -66,6 +72,7 @@ public class EventServiceImpl implements EventService {
         Location location = locationRepository.save(newLocation);
         newEvent.setLocation(location);
         newEvent.setCreatedOn(LocalDateTime.now());
+        newEvent.setUpdatedOn(LocalDateTime.now());
         newEvent.setState(EventStatus.PENDING);
 
 
@@ -79,6 +86,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateUserEvent(UpdateEventUserRequest eventUserRequest, Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
@@ -105,6 +113,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult updateRequestsStatus(EventRequestStatusUpdateRequest updateRequest,
                                                                Long userId, Long eventId) {
         Event event = checkIsUserEvent(userId, eventId);
@@ -178,6 +187,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateAdminEvent(UpdateEventUserRequest updateEventAdminRequest, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
@@ -261,7 +271,7 @@ public class EventServiceImpl implements EventService {
         throw new NotFoundException("Event with id=" + id + " was not found");
     }
 
-
+    @Transactional
     private void updateEventFields(Event event, UpdateEventUserRequest eventUserRequest) {
         if (eventUserRequest.getAnnotation() != null) {
             event.setAnnotation(eventUserRequest.getAnnotation());
@@ -327,6 +337,7 @@ public class EventServiceImpl implements EventService {
                 event.setLocation(newLoc);
             }
         }
+        event.setUpdatedOn(LocalDateTime.now());
     }
 
     private Event checkIsUserEvent(Long userId, Long eventId) {
@@ -371,4 +382,59 @@ public class EventServiceImpl implements EventService {
 
         }
     }
+
+    @Override
+    @Transactional
+    public EventAdminCommentDto addAdminCommentAndChangeStatus(NewEventAdminCommentDto eventAdminComment) {
+        Event event = eventRepository.findById(eventAdminComment.getEventId()).orElseThrow(
+                () -> new NotFoundException("Event with id=" + eventAdminComment.getEventId() + " was not found")
+        );
+        if (!event.getState().equals(EventStatus.PENDING)) {
+            throw new ValidationException("You can add comment just for events with status Pending");
+        }
+
+        event.setState(EventStatus.NEED_CORRECTIONS);
+        eventRepository.save(event);
+        AdminComment newAdminComment = AdminComment.builder()
+                .event(event)
+                .text(eventAdminComment.getText())
+                .status(AdminCommentStatus.ACTUAL)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return AdminCommentMapper.toAdminCommentDto(adminCommentRepository.save(newAdminComment));
+    }
+
+    @Override
+    public List<EventAdminCommentDto> getAdminComment(Long userId, Long eventId) {
+        Event event = checkIsUserEvent(userId, eventId);
+        if (!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
+            throw new ValidationException("Event doesn't have comments");
+        }
+        List<AdminComment> eventComments = adminCommentRepository.findAllByEventId(eventId);
+        return eventComments.stream().map(AdminCommentMapper::toAdminCommentDto).toList();
+    }
+
+    @Override
+    @Transactional
+    public EventFullDto resendEvent(Long userId, Long eventId) {
+        Event event = checkIsUserEvent(userId, eventId);
+        if (!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {
+            throw new ValidationException("You can resend to moderation events on status 'Need correction'");
+        }
+        AdminComment actualComment = adminCommentRepository.findByEventIdAndStatus(eventId, AdminCommentStatus.ACTUAL);
+        if (actualComment == null) {
+            throw new NotFoundException("Admin comment for event with id=" + eventId + " was not found");
+        }
+        if (actualComment.getCreatedAt().isAfter(event.getUpdatedOn())) {
+            throw new ConflictException("You should fix Event before resend to moderation");
+        }
+        actualComment.setStatus(AdminCommentStatus.OUTDATED);
+        adminCommentRepository.save(actualComment);
+
+        event.setState(EventStatus.PENDING);
+        return EventMapper.toFullDto(eventRepository.save(event));
+    }
+
+
 }
