@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatClient;
 import ru.practicum.dto.*;
 import ru.practicum.exception.ConflictException;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
@@ -51,6 +53,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto createNewEvent(NewEventDto newEventDto, Long userId) {
         Event newEvent = EventMapper.toEvent(newEventDto);
         if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -83,6 +86,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateUserEvent(UpdateEventUserRequest eventUserRequest, Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
@@ -109,6 +113,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult updateRequestsStatus(EventRequestStatusUpdateRequest updateRequest,
                                                                Long userId, Long eventId) {
         Event event = checkIsUserEvent(userId, eventId);
@@ -182,6 +187,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto updateAdminEvent(UpdateEventUserRequest updateEventAdminRequest, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventId + " was not found"));
@@ -265,6 +271,7 @@ public class EventServiceImpl implements EventService {
         throw new NotFoundException("Event with id=" + id + " was not found");
     }
 
+    @Transactional
     private void updateEventFields(Event event, UpdateEventUserRequest eventUserRequest) {
         if (eventUserRequest.getAnnotation() != null) {
             event.setAnnotation(eventUserRequest.getAnnotation());
@@ -377,6 +384,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventAdminCommentDto addAdminCommentAndChangeStatus(NewEventAdminCommentDto eventAdminComment) {
         Event event = eventRepository.findById(eventAdminComment.getEventId()).orElseThrow(
                 () -> new NotFoundException("Event with id=" + eventAdminComment.getEventId() + " was not found")
@@ -408,6 +416,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto resendEvent(Long userId, Long eventId) {
         Event event = checkIsUserEvent(userId, eventId);
         if (!event.getState().equals(EventStatus.NEED_CORRECTIONS)) {

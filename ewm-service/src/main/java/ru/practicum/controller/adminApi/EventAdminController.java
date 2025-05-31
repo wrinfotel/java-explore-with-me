@@ -17,21 +17,19 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> getEvents(@RequestParam(name = "users", required = false) List<Long> users,
-                                        @RequestParam(name = "states", required = false) List<EventStatus> states,
-                                        @RequestParam(name = "categories", required = false) List<Long> categories,
-                                        @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                        @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                        @RequestParam(name = "from", defaultValue = "0", required = false) Integer from,
-                                        @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
+    public List<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
+                                        @RequestParam(required = false) List<EventStatus> states,
+                                        @RequestParam(required = false) List<Long> categories,
+                                        @RequestParam(required = false) String rangeStart,
+                                        @RequestParam(required = false) String rangeEnd,
+                                        @RequestParam(defaultValue = "0") Integer from,
+                                        @RequestParam(defaultValue = "10") Integer size) {
         return eventService.eventAdminSearch(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @GetMapping("/pending-events")
-    public List<EventFullDto> getPendingEvents(@RequestParam(name = "from", defaultValue = "0",
-                                                       required = false) Integer from,
-                                               @RequestParam(name = "size", defaultValue = "10",
-                                                       required = false) Integer size) {
+    public List<EventFullDto> getPendingEvents(@RequestParam(defaultValue = "0") Integer from,
+                                               @RequestParam(defaultValue = "10") Integer size) {
         return eventService.eventAdminSearch(null, List.of(EventStatus.PENDING),
                 null, null, null, from, size);
     }

@@ -17,16 +17,16 @@ public class EventPrivateController {
     private final EventService eventService;
 
     @GetMapping("/{userId}/events")
-    public List<EventShortDto> getUserEvents(@PathVariable("userId") Long userId,
-                                             @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<EventShortDto> getUserEvents(@PathVariable Long userId,
+                                             @RequestParam(defaultValue = "0") Integer from,
+                                             @RequestParam(defaultValue = "10") Integer size) {
         return eventService.getUserEvents(userId, from, size);
     }
 
     @PostMapping("/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto,
-                                    @PathVariable("userId") Long userId) {
+                                    @PathVariable Long userId) {
         return eventService.createNewEvent(newEventDto, userId);
     }
 
