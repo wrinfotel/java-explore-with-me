@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.CategoryDto;
 import ru.practicum.dto.NewCategoryDto;
 import ru.practicum.exception.ConflictException;
@@ -17,6 +18,7 @@ import ru.practicum.repository.EventRepository;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
@@ -24,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional
     public CategoryDto createCategory(NewCategoryDto categoryDto) {
         Category checkCategory = categoryRepository.findByName(categoryDto.getName());
         if (checkCategory != null) {
@@ -35,6 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long catId) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found"));
@@ -46,6 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto updateCategory(CategoryDto categoryDto, Long catId) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("Category with id=" + catId + " was not found"));

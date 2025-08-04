@@ -18,7 +18,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase().toUpperCase(),
+        return new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase().toUpperCase(),
                 "The required object was not found.",
                 e.getMessage(),
                 LocalDateTime.now().format(DATE_TIME_FORMATTER)

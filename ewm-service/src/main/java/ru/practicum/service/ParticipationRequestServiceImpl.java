@@ -2,6 +2,7 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EventStatus;
 import ru.practicum.dto.ParticipationRequestDto;
 import ru.practicum.dto.RequestStatus;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
@@ -36,6 +38,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + eventId + " was not found"));
@@ -62,6 +65,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         ParticipationRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Request with id=" + requestId + " was not found"));

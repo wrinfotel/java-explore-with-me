@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.CompilationDto;
 import ru.practicum.dto.NewCompilationDto;
 import ru.practicum.dto.UpdateCompilationRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
@@ -48,6 +50,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto createCompilation(NewCompilationDto newCompilation) {
         Compilation compilation = CompilationMapper.toCompilation(newCompilation);
         if (newCompilation.getEvents() != null && !newCompilation.getEvents().isEmpty()) {
@@ -64,6 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Compilation with id=" + compId + " was not found")
@@ -72,6 +76,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest compilationRequest) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Compilation with id=" + compId + " was not found")

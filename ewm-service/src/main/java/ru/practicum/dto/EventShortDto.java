@@ -30,6 +30,8 @@ public class EventShortDto {
     @NotNull
     private UserShortDto initiator;
 
+    private EventStatus state;
+
     private boolean paid;
 
     @NotNull

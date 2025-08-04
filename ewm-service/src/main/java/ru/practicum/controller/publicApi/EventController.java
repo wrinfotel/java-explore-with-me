@@ -25,17 +25,15 @@ public class EventController {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(name = "text", required = false) String text,
-                                         @RequestParam(name = "categories", required = false) List<Long> categories,
-                                         @RequestParam(name = "paid", required = false) Boolean paid,
-                                         @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                                         @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                                         @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
-                                         @RequestParam(name = "sort", required = false) String sort,
-                                         @RequestParam(name = "from", required = false,
-                                                 defaultValue = "0") Integer from,
-                                         @RequestParam(name = "size",
-                                                 required = false, defaultValue = "10") Integer size,
+    public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
+                                         @RequestParam(required = false) List<Long> categories,
+                                         @RequestParam(required = false) Boolean paid,
+                                         @RequestParam(required = false) String rangeStart,
+                                         @RequestParam(required = false) String rangeEnd,
+                                         @RequestParam(required = false) Boolean onlyAvailable,
+                                         @RequestParam(required = false) String sort,
+                                         @RequestParam(defaultValue = "0") Integer from,
+                                         @RequestParam(defaultValue = "10") Integer size,
                                          HttpServletRequest request) {
         sendStat(request);
         return eventService.eventSearch(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
